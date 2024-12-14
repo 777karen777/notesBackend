@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 
 const app = express()
 
@@ -43,9 +44,10 @@ app.use(express.json())
 
 
 app.use(requestLogger)
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({error: 'unknown endpoint'})
-}
+// const unknownEndpoint = (request, response) => {
+//   response.status(404).send({error: 'unknown endpoint'})
+// }
+
 
 
 app.get('/', (request, response) => {
@@ -74,8 +76,8 @@ app.delete('/api/notes/:id', (request, response) => {
 
 const generateId = () => {
   const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => Number(n.id)))
-    : 0
+  ? Math.max(...notes.map(n => Number(n.id)))
+  : 0
   return String(maxId + 1)
 }
 
@@ -104,8 +106,11 @@ app.post('/api/notes', (request, response) => {
   response.json(note)      
 })
 
+app.get('*', (request, response) => {
+  response.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+})
 // app.use(unknownEndpoint)
-app.use(unknownEndpoint)
+// app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
