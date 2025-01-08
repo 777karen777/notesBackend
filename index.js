@@ -1,8 +1,18 @@
-const express = require('express')
-const cors = require('cors')
-const path = require('path')
+const app = require('./app') // the actuall Express application
+const config = require('./utils/config')
+const logger = require('./utils/logger')
+
+
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
+})
+
+/* const express = require('express')
+// const cors = require('cors')
+// const path = require('path')
 const Note = require('./models/note')
-const { request } = require('http')
+
+// const { request } = require('http')
 // const mongoose = require('mongoose')
 
 // require('dotenv').config()
@@ -36,7 +46,7 @@ const app = express()
 // app.use(cors())
 
 app.use(express.static('dist'))
-app.use(express.json());
+app.use(express.json())
 
 
 
@@ -68,17 +78,17 @@ const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:', request.path)
   console.log('Body:', request.body)
-  console.log('---');
-  next()  
+  console.log('---')
+  next()
 }
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({error: 'malformated id'})
+    return response.status(400).send({ error: 'malformated id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({error: error.message})
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
@@ -89,7 +99,7 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(requestLogger)
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({error: 'unknown endpoint'})
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 
 
@@ -108,33 +118,33 @@ app.get('/api/notes/:id', (request, response, next) => {
       }
     })
     .catch(error => {
-      /* console.log(error);
-      response.status(400).send({error: 'malformated id'})      
-     */
+      // console.log(error);
+      // response.status(400).send({ error: 'malformated id'})
+
       next(error)
     })
-  /* const id = request.params.id
-  const note = notes.find(note => note.id === id)
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  } */
+  // const id = request.params.id
+  // const note = notes.find(note => note.id === id)
+  // if (note) {
+  //   response.json(note)
+  // } else {
+  //   response.status(404).end()
+  // }
 })
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
     response.json(notes)
   })
-  // response.json(notes)
+
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
   const { content, important } = request.body
 
   Note.findByIdAndUpdate(request.params.id,
-    { content, important},
-    {new: true, runValidators: true, context: 'query' }
+    { content, important },
+    { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedNote => {
       response.json(updatedNote)
@@ -149,7 +159,7 @@ app.delete('/api/notes/:id', (request, response, next) => {
       response.status(204).end()
     })
     .catch(error => next(error))
-}) 
+})
 
 // const generateId = () => {
 //   const maxId = notes.length > 0
@@ -159,15 +169,15 @@ app.delete('/api/notes/:id', (request, response, next) => {
 // }
 
 app.post('/api/notes', (request, response, next) => {
-  
+
   const body = request.body
-  
-  if(body.content === undefined) {
-    return response.status(400).json({
-      error: 'content missing'
-    })
-  }
-  
+
+  // if(body.content === undefined) {
+  //   return response.status(400).json({
+  //     error: 'content missing'
+  //   })
+  // }
+
   const note = new Note({
     content: body.content,
     important: Boolean(body.important) || false,
@@ -179,7 +189,7 @@ app.post('/api/notes', (request, response, next) => {
       response.json(savedNote)
     })
     .catch(error => next(error))
-      
+
 })
 
 // app.get('*', (request, response) => {
@@ -190,5 +200,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-console.log(`Server running on port ${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`)
+}) */
